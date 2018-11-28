@@ -1,1 +1,6 @@
 extends: airbnb-base
+globals:
+  secrets: true
+  window: true
+  document: true
+  Instascan: true
