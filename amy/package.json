@@ -1,0 +1,13 @@
+{
+  "name": "amys_present",
+  "version": "1.0.0",
+  "description": "Site for Amy's Birthday Present",
+  "main": "src/index.js",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
