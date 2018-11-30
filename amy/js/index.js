@@ -19,7 +19,6 @@ class PresentUnlocker {
     this.scanner = new Instascan.Scanner(scannerOptions);
     this.scanner.addListener('scan', (content) => {
       this.addShare(content);
-      PresentUnlocker.changeTab('progress');
     });
     Instascan.Camera.getCameras().then((cameras) => {
       this.cameras = cameras;
@@ -65,6 +64,7 @@ class PresentUnlocker {
     }
     this.shares.push(share);
     this.updateCurrentScansPlaceholders();
+    PresentUnlocker.changeTab('progress');
     this.updateProgressBar();
   }
 
@@ -74,6 +74,34 @@ class PresentUnlocker {
     progressBarElement.style.width = `${progress}%`;
     progressBarElement.setAttribute('aria-valuenow', this.countShares().toString());
     progressBarElement.setAttribute('aria-valuemax', this.requiredShares.toString());
+
+    // Check if all codes have been scanned.
+    if (this.countShares() >= this.requiredShares) {
+      progressBarElement.classList.add('finished');
+      setTimeout(() => this.unlock, 4000);
+    }
+  }
+
+  unlock() {
+    const placeholders = document.querySelectorAll('.js-answer');
+    const answer = this.decrypt();
+    placeholders.forEach((node) => {
+      node.innerText = answer;
+    });
+    const unlockTab = document.getElementById('unlock-tab');
+    unlockTab.setAttribute('aria-disabled', 'false');
+    unlockTab.classList.remove('disabled');
+    const scanButton = document.querySelector('.js-open-scan');
+    scanButton.setAttribute('aria-disabled', 'true');
+    scanButton.classList.add('disabled');
+    const fireworks = document.getElementById('fireworks-canvas');
+    document.getElementById('unlock').append(fireworks);
+    PresentUnlocker.changeTab('unlock');
+  }
+
+  decrypt() {
+    return secrets.combine(this.shares);
+
   }
 
   updateScansRequiredPlaceholders() {

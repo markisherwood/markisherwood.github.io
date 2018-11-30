@@ -11,6 +11,29 @@ body {
   margin-bottom: 2rem;
   height: 3rem;
 }
+.progress .progress-bar {
+  transition-timing-function: ease-in;
+}
+
+@keyframes finished-flash {
+  0% {
+      background-color: var(--primary);
+      opacity:1;
+  }
+  50% {
+      background-color: var(--success);
+  }
+  100% {
+      background-color:var(--primary);
+  }
+}
+  
+.finished {
+  animation-name: finished-flash;
+  animation-duration: 400ms;
+  animation-iteration-count: 10;
+  animation-timing-function: ease-in-out;
+}
 
 .scan-tab .camera-preview {
   max-width: 100%;
