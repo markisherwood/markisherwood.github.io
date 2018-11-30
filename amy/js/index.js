@@ -1,33 +1,38 @@
 class presentUnlocker {
   /**
    * Creates a new present unlocker.
-   * 
-   * @param {int} requiredShares 
+   *
+   * @param {number} requiredShares
    */
   constructor(requiredShares) {
     this.requiredShares = requiredShares;
     this.shares = [];
-    let scanner_options = {
+    const scanner_options = {
       continuous: true,
       video: document.getElementById('js-camera-preview'),
       mirror: true,
       backgroundScan: false,
       refractoryPeriod: 5000,
-      scanPeriod: 1
+      scanPeriod: 1,
     };
     this.scanner = new Instascan.Scanner(scanner_options);
-    this.scanner.addListener('scan', content => {
-      console.log(content);
+    this.scanner.addListener('scan', (content) => {
+      this.addShare(content);
+      this.changeTab('progress');
     });
-    Instascan.Camera.getCameras().then(cameras => {
+    Instascan.Camera.getCameras().then((cameras) => {
       if (cameras.length > 0) {
         this.scanner.start(cameras[0]);
-      } else {
-        console.error('No cameras found.');
       }
-    }).catch(function (e) {
-      console.error(e);
     });
+
+    this.updateCurrentScansPlaceholders();
+    this.updateScansRequiredPlaceholders();
+  }
+
+  changeTab(tabName) {
+    var tab = document.getElementById(`${tabName}-tab`);
+    tab.click();
   }
 
   addShare(share) {
@@ -35,6 +40,30 @@ class presentUnlocker {
     if (!this.shares.includes(share)) {
       this.shares.push(share);
     }
+    this.updateCurrentScansPlaceholders();
+    this.updateProgressBar();
+  }
+
+  updateProgressBar() {
+    const progressBarElement = document.querySelector('.progress-bar');
+    const progress = this.countShares() / this.requiredShares * 100;
+    progressBarElement.style.width = `${progress}%`;
+    progressBarElement.setAttribute('aria-valuenow', this.countShares().toString());
+    progressBarElement.setAttribute('aria-valuemax', this.requiredShares.toString());
+  }
+
+  updateScansRequiredPlaceholders() {
+    const placeholders = document.querySelectorAll('.js-scans-required-scans');
+    placeholders.forEach((node) => {
+      node.innerText = this.requiredShares;
+    });
+  }
+
+  updateCurrentScansPlaceholders() {
+    const placeholders = document.querySelectorAll('.js-current-scans');
+    placeholders.forEach((node) => {
+      node.innerText = this.countShares();
+    });
   }
 
   countShares() {
