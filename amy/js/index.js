@@ -1,4 +1,4 @@
-class presentUnlocker {
+class PresentUnlocker {
   /**
    * Creates a new present unlocker.
    *
@@ -75,4 +75,8 @@ class presentUnlocker {
   }
 }
 
-let present = new presentUnlocker(10);
+let present = new PresentUnlocker(10);
+
+$('.navbar-nav>li>a').on('click', () => {
+  $('.navbar-collapse').collapse('hide');
+});
