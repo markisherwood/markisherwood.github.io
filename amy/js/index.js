@@ -96,7 +96,10 @@ class PresentUnlocker {
     // Check if all codes have been scanned.
     if (this.countShares() >= this.requiredShares) {
       progressBarElement.classList.add('finished');
-      setTimeout(() => this.unlock, 4000);
+      const scanButton = document.querySelector('.js-open-scan');
+      scanButton.setAttribute('aria-disabled', 'true');
+      scanButton.classList.add('disabled');
+      setTimeout(() => this.unlock(), 4000);
     }
   }
 
@@ -109,9 +112,6 @@ class PresentUnlocker {
     const unlockTab = document.getElementById('unlock-tab');
     unlockTab.setAttribute('aria-disabled', 'false');
     unlockTab.classList.remove('disabled');
-    const scanButton = document.querySelector('.js-open-scan');
-    scanButton.setAttribute('aria-disabled', 'true');
-    scanButton.classList.add('disabled');
     const fireworks = document.getElementById('fireworks-canvas');
     document.getElementById('unlock').append(fireworks);
     PresentUnlocker.changeTab('unlock');
@@ -138,10 +138,6 @@ class PresentUnlocker {
 
   countShares() {
     return this.shares.length;
-  }
-
-  unlockPresent() {
-    return secrets.combine(this.shares);
   }
 
   static createAlert(message, type='warning') {
