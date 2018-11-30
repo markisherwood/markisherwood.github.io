@@ -90,8 +90,12 @@ class PresentUnlocker {
   }
 }
 
-const present = new PresentUnlocker(10);
+const present = new PresentUnlocker(11);
 
 $('.navbar-nav>li>a').on('click', () => {
   $('.navbar-collapse').collapse('hide');
+});
+
+$('.js-open-scan').on('click', () => {
+  PresentUnlocker.changeTab('scan');
 });
