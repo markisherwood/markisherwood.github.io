@@ -6,6 +6,20 @@ body {
   text-align: center;
 }
 
+.progress {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  height: 3rem;
+}
+
 .scan-tab .camera-preview {
   max-width: 100%;
+}
+
+#fireworks-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
