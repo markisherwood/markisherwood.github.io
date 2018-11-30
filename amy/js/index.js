@@ -4,10 +4,12 @@ class PresentUnlocker {
    *
    * @param {number} requiredShares
    */
-  constructor(requiredShares) {
+  constructor(requiredShares, presentId) {
     this.requiredShares = requiredShares;
-    this.shares = [];
-    this.cameras;
+    this.cameras = null;
+    this.presentId = presentId;
+    this.loadFromStorage();
+    
     const scannerOptions = {
       continuous: true,
       video: document.getElementById('js-camera-preview'),
@@ -26,8 +28,22 @@ class PresentUnlocker {
 
     this.updateCurrentScansPlaceholders();
     this.updateScansRequiredPlaceholders();
+    this.updateProgressBar();
 
     this.watchTabs();
+  }
+
+  saveToStorage() {
+    localStorage.setItem(this.presentId, JSON.stringify(this.shares));
+  }
+
+  loadFromStorage() {
+    const previousData = localStorage.getItem(this.presentId);
+    this.shares = previousData !== null ? JSON.parse(previousData) : [];
+  }
+
+  clearStorage() {
+    localStorage.removeItem(this.presentId);
   }
 
   watchTabs() {
@@ -66,7 +82,9 @@ class PresentUnlocker {
     this.updateCurrentScansPlaceholders();
     PresentUnlocker.changeTab('progress');
     this.updateProgressBar();
+    this.saveToStorage();
   }
+  
 
   updateProgressBar() {
     const progressBarElement = document.querySelector('.progress-bar');
@@ -150,7 +168,7 @@ class PresentUnlocker {
   }
 }
 
-const present = new PresentUnlocker(11);
+const present = new PresentUnlocker(11, '2018');
 
 $('.navbar-nav>li>a').on('click', () => {
   $('.navbar-collapse').collapse('hide');
