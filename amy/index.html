@@ -39,14 +39,20 @@
     <main role="main" class="container">
       <div class="tab-content">
         <div id="home" role="tabpanel" aria-labelledby="home-tab" class="tab-pane active show intro-text">
-          <h1>Happy Birthday Amy!</h1>
-          <p class="lead">I hope your birthday has been great so far. I decided to make a bit of a puzzle to go with your present.</p>
-          <p class="lead">Use the menu to start unlocking your present.</p>
+          <canvas id="fireworks-canvas">Canvas is not supported in your browser.</canvas>
+          <div class="text-wrapper">
+            <h1>Happy Birthday Amy!</h1>
+            <p class="lead">I hope your birthday has been great so far. I decided to make a bit of a puzzle to go with your present.</p>
+            <p class="lead">Use the menu to start unlocking your present.</p>
+          </div>
         </div>
         <div id="progress" role="tabpanel" aria-labelledby="progress-tab" class="tab-pane">
           <p class="lead">You've found <span class="js-current-scans"></span> out of <span class="js-scans-required-scans"></span> codes</p>
           <div class="progress">
             <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <div class="button-wrapper">
+            <a class="btn btn-primary btn-lg btn-block js-open-scan" href="#scan" role="button">Scan code</a>
           </div>
         </div>
         <div id="scan" class="tab-pane scan-tab" role="tabpanel" aria-labelledby="video-tab">
@@ -69,5 +75,6 @@
     <script src="/amy/js/secrets.js"></script>
     <script src="/amy/js/instascan.min.js"></script>
     <script src="/amy/js/index.js"></script>
+    <script src="/amy/js/fireworks.js"></script>
   </body>
 </html>
