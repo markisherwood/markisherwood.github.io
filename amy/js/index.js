@@ -51,10 +51,19 @@ class PresentUnlocker {
   }
 
   addShare(share) {
-    // Only add the share if it's not already in the list.
-    if (!this.shares.includes(share)) {
-      this.shares.push(share);
+    // Check lenght and character for validity.
+    const verificationRegex = /^[a-f0-9]{35}$/;
+    if (!verificationRegex.test(share)) {
+      PresentUnlocker.createAlert("This doesn't look like a valid code.");
+      return;
     }
+    
+    // Only add the share if it's not already in the list.
+    if (this.shares.includes(share)) {
+      PresentUnlocker.createAlert("You've already scanned this code.", 'info');
+      return;
+    }
+    this.shares.push(share);
     this.updateCurrentScansPlaceholders();
     this.updateProgressBar();
   }
@@ -87,6 +96,29 @@ class PresentUnlocker {
 
   unlockPresent() {
     return secrets.combine(this.shares);
+  }
+
+  static createAlert(message, type='warning') {
+    const alert = document.createElement('div');
+    const classes = [
+      'alert',
+      `alert-${type}`,
+      'alert-dismissible',
+      'fade',
+      'show',
+    ];
+    alert.classList.add(...classes);
+    alert.setAttribute('role', 'alert');
+    alert.innerText = message;
+    const closeButton = document.createElement('button');
+    closeButton.setAttribute('type', 'button');
+    closeButton.classList.add('close');
+    closeButton.setAttribute('data-dismiss', 'alert');
+    closeButton.setAttribute('aria-label', 'Close');
+    closeButton.innerHTML = '<span aria-hidden="true">&times;</span>';
+    alert.append(closeButton);
+    const alertContainer = document.querySelector('.alert-container');
+    alertContainer.append(alert);
   }
 }
 
