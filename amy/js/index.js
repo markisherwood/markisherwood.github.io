@@ -8,8 +8,11 @@ class PresentUnlocker {
     this.requiredShares = requiredShares;
     this.cameras = null;
     this.presentId = presentId;
+    this.successfulAudio = new Audio('/amy/sounds/successful_scan.wav');
+    this.errorAudio = new Audio('/amy/sounds/error.wav');
+    this.unlockAudio = new Audio('/amy/sounds/unlock.wav');
     this.loadFromStorage();
-    
+
     const scannerOptions = {
       continuous: true,
       video: document.getElementById('js-camera-preview'),
@@ -66,25 +69,26 @@ class PresentUnlocker {
   }
 
   addShare(share) {
-    // Check lenght and character for validity.
+    // Check length and character for validity.
     const verificationRegex = /^[a-f0-9]{35}$/;
     if (!verificationRegex.test(share)) {
-      PresentUnlocker.createAlert("This doesn't look like a valid code.");
+      this.createAlert("This doesn't look like a valid code.");
       return;
     }
-    
+
     // Only add the share if it's not already in the list.
     if (this.shares.includes(share)) {
-      PresentUnlocker.createAlert("You've already scanned this code.", 'info');
+      this.createAlert("You've already scanned this code.", 'info');
       return;
     }
     this.shares.push(share);
     this.updateCurrentScansPlaceholders();
     PresentUnlocker.changeTab('progress');
     this.updateProgressBar();
+    this.successfulAudio.play();
     this.saveToStorage();
   }
-  
+
 
   updateProgressBar() {
     const progressBarElement = document.querySelector('.progress-bar');
@@ -99,7 +103,8 @@ class PresentUnlocker {
       const scanButton = document.querySelector('.js-open-scan');
       scanButton.setAttribute('aria-disabled', 'true');
       scanButton.classList.add('disabled');
-      setTimeout(() => this.unlock(), 4000);
+      this.unlockAudio.play();
+      setTimeout(() => this.unlock(), 5000);
     }
   }
 
@@ -140,7 +145,7 @@ class PresentUnlocker {
     return this.shares.length;
   }
 
-  static createAlert(message, type='warning') {
+  createAlert(message, type = 'warning') {
     const alert = document.createElement('div');
     const classes = [
       'alert',
@@ -160,6 +165,9 @@ class PresentUnlocker {
     closeButton.innerHTML = '<span aria-hidden="true">&times;</span>';
     alert.append(closeButton);
     const alertContainer = document.querySelector('.alert-container');
+    if (type === 'warning' || type === 'error') {
+      this.errorAudio.play();
+    }
     alertContainer.append(alert);
   }
 }
