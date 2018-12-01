@@ -4,3 +4,5 @@ globals:
   window: true
   document: true
   Instascan: true
+  localStorage: true
+  Audio: true
