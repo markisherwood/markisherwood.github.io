@@ -16,7 +16,7 @@ class PresentUnlocker {
     const scannerOptions = {
       continuous: true,
       video: document.getElementById('js-camera-preview'),
-      mirror: true,
+      mirror: false,
       backgroundScan: false,
       refractoryPeriod: 5000,
       scanPeriod: 1,
@@ -24,16 +24,6 @@ class PresentUnlocker {
     this.scanner = new Instascan.Scanner(scannerOptions);
     this.scanner.addListener('scan', (content) => {
       this.addShare(content);
-    });
-    Instascan.Camera.getCameras().then((cameras) => {
-      this.camera = cameras[0];
-      for (let index = 0; index < cameras.length; index++) {
-        const cameraName = cameras[index].name;
-        if (cameraName.includes('back')) {
-          this.camera = cameras[index];
-        }
-
-      }
     });
 
     this.updateCurrentScansPlaceholders();
@@ -62,18 +52,34 @@ class PresentUnlocker {
       tab.addEventListener('click', (event) => {
         const target = event.target.getAttribute('href');
         if (target === '#scan') {
-          this.scanner.start(this.camera);
+          this.startScanning();
         } else {
-          this.scanner.stop();
+          this.stopScanning();
         }
       });
     });
   }
 
+  async startScanning() {
+    if (this.camera === null) {
+      const cameras = await Instascan.Camera.getCameras();
+      this.camera = cameras[0];
+      for (let index = 0; index < cameras.length; index += 1) {
+        const cameraName = cameras[index].name;
+        if (cameraName.includes('back')) {
+          this.camera = cameras[index];
+        }
+      }
+    }
+    this.scanner.start(this.camera);
+  }
+
+  stopScanning() {
+    this.scanner.stop();
+  }
+
   static changeTab(tabName) {
-    const id = `${tabName}-tab`;
-    const tab = document.getElementById(id);
-    window.location.hash = `#${id}`;
+    const tab = document.getElementById(`${tabName}-tab`);
     tab.click();
   }
 
