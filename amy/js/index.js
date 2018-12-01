@@ -6,7 +6,7 @@ class PresentUnlocker {
    */
   constructor(requiredShares, presentId) {
     this.requiredShares = requiredShares;
-    this.cameras = null;
+    this.camera = null;
     this.presentId = presentId;
     this.successfulAudio = new Audio('/amy/sounds/successful_scan.wav');
     this.errorAudio = new Audio('/amy/sounds/error.wav');
@@ -26,7 +26,14 @@ class PresentUnlocker {
       this.addShare(content);
     });
     Instascan.Camera.getCameras().then((cameras) => {
-      this.cameras = cameras;
+      this.camera = cameras[0];
+      for (let index = 0; index < cameras.length; index++) {
+        const cameraName = cameras[index].name;
+        if (cameraName.includes('back')) {
+          this.camera = cameras[index];
+        }
+
+      }
     });
 
     this.updateCurrentScansPlaceholders();
@@ -55,7 +62,7 @@ class PresentUnlocker {
       tab.addEventListener('click', (event) => {
         const target = event.target.getAttribute('href');
         if (target === '#scan') {
-          this.scanner.start(this.cameras[0]);
+          this.scanner.start(this.camera);
         } else {
           this.scanner.stop();
         }
@@ -64,7 +71,9 @@ class PresentUnlocker {
   }
 
   static changeTab(tabName) {
-    const tab = document.getElementById(`${tabName}-tab`);
+    const id = `${tabName}-tab`;
+    const tab = document.getElementById(id);
+    window.location.hash = `#${id}`;
     tab.click();
   }
 
