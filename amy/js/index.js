@@ -66,7 +66,7 @@ class PresentUnlocker {
       this.camera = cameras[0];
       for (let index = 0; index < cameras.length; index += 1) {
         const cameraName = cameras[index].name;
-        if (cameraName.includes('back')) {
+        if (cameraName !== null && cameraName.includes('back')) {
           this.camera = cameras[index];
         }
       }
